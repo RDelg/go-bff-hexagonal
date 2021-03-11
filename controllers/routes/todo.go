@@ -1,15 +1,13 @@
 package routes
 
 import (
-	"bff/services"
+	"bff/domain"
 
 	"github.com/gin-gonic/gin"
 )
 
 // AddTodoRoutes adds todo routes
-func AddTodoRoutes(rg *gin.RouterGroup) {
+func AddTodoRoutes(config *domain.RestConfig, rg *gin.RouterGroup) {
 	ping := rg.Group("/todo")
-
-	ping.GET("/", services.FetchAllTodo)
-
+	ping.GET("/", config.HTTP.Get())
 }

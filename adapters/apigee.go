@@ -1,8 +1,6 @@
 package adapters
 
-import (
-	"bff/domain"
-)
+import "bff/domain"
 
 // ApigeePort contains all the methods to interactuate with ApiGee
 type ApigeePort interface {
@@ -15,8 +13,8 @@ type ApigeeAdapter struct {
 	secret   string
 }
 
-// CreateApigeeAdapter returns a reference to a new ApigeeAdapter
-func CreateApigeeAdapter(clientID, secret string) (*ApigeeAdapter, error) {
+// NewApigeeAdapter returns a reference to a new ApigeeAdapter
+func NewApigeeAdapter(clientID, secret string) (*ApigeeAdapter, error) {
 	// TODO: Add validation
 	return &ApigeeAdapter{
 		clientID: clientID,
@@ -27,7 +25,7 @@ func CreateApigeeAdapter(clientID, secret string) (*ApigeeAdapter, error) {
 //GetAccessToken returns an Apigee token and its duration
 func (a *ApigeeAdapter) GetAccessToken() (*domain.ApigeeTokenClaims, error) {
 	return &domain.ApigeeTokenClaims{
-		AccessToken: "test_token",
+		AccessToken: "test_token asd qwe",
 		IssuedAt:    1,
 		ExpiresIn:   2,
 	}, nil

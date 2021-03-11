@@ -6,14 +6,14 @@ import (
 	"log"
 )
 
-// ApigeetokenService contains the methods to acess apigee
-type ApigeetokenService struct {
+// ApigeeService contains the methods to acess apigee
+type ApigeeService struct {
 	apigeePort adapters.ApigeePort
 }
 
 // GetAccessToken validates the id token jwt string
 // It returns the user extract from the IDTokenCustomClaims
-func (s *ApigeetokenService) GetAccessToken() (string, error) {
+func (s *ApigeeService) GetAccessToken() (string, error) {
 	claims, err := s.apigeePort.GetAccessToken()
 	if err != nil {
 		log.Printf("Error getting the access token - Error: %v\n", err)
@@ -22,7 +22,7 @@ func (s *ApigeetokenService) GetAccessToken() (string, error) {
 	return claims.AccessToken, nil
 }
 
-// NewApigeetokenService returns a new ApigeetokenService
-func NewApigeetokenService(adapter adapters.ApigeePort) *ApigeetokenService {
-	return &ApigeetokenService{apigeePort: adapter}
+// NewApigeeService returns a new ApigeeService
+func NewApigeeService(adapter adapters.ApigeePort) *ApigeeService {
+	return &ApigeeService{apigeePort: adapter}
 }
