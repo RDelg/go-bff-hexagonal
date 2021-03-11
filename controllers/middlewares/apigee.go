@@ -10,7 +10,6 @@ import (
 // ApigeeMiddleware creates an Apigee auth middleware
 func ApigeeMiddleware(s domain.AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// validate ID token here
 		accessToken, err := s.GetAccessToken()
 		if err != nil {
 			err := apperrors.NewAuthorization("Provided token is invalid")
