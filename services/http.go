@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +15,7 @@ type HTTPService struct{}
 func (s *HTTPService) Get() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		acessToken, _ := c.Get("access_token")
-		fmt.Printf("hello Get %v\n", fmt.Sprint(acessToken))
+		log.Printf("Hello from adapter. acess_token: %v\n", fmt.Sprint(acessToken))
 		c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "test": "123"})
 	}
 }

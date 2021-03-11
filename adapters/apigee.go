@@ -2,11 +2,12 @@ package adapters
 
 import (
 	"bff/domain"
-	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 // ApigeePort contains all the methods to interactuate with ApiGee
@@ -38,40 +39,37 @@ type foo struct {
 
 //GetAccessToken returns an Apigee token and its duration
 func (a *ApigeeAdapter) GetAccessToken() (*domain.ApigeeTokenClaims, error) {
-	data := domain.ApigeeTokenRequest{
-		GrandType:    "client_credentials",
-		ClientID:     a.clientID,
-		ClientSecret: a.secret,
-		Scope:        "",
+	data := url.Values{}
+	data.Set("grant_type", "client_credentials")
+	data.Set("client_id", a.clientID)
+	data.Set("client_secret", a.secret)
+	data.Set("scope", "")
+
+	req, err := http.NewRequest(http.MethodPost, a.authEndpoint, strings.NewReader(data.Encode()))
+	if err != nil {
+		log.Fatalln(err)
+		return nil, err
 	}
 
-	dataJSON, _ := json.Marshal(&data)
-
-	// fmt.Println("ASDASD", bytes.NewBuffer(dataJSON)) // write response to ResponseWriter (w)
-
-	req, _ := http.NewRequest("POST", a.authEndpoint, bytes.NewBuffer(dataJSON))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatalln(err)
+		return nil, err
 	}
 
 	defer resp.Body.Close()
 
-	//We Read the response body on the line below.
+	// We read the response body on the line below.
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
+		return nil, err
 	}
-	//Convert the body to type string
-	sb := string(body)
-	log.Println("ASDASDASDASDDAS", sb)
-
-	return &domain.ApigeeTokenClaims{
-		AccessToken: "test_token asd qwe",
-		IssuedAt:    1,
-		ExpiresIn:   2,
-	}, nil
+	// Populate claims from body data
+	var claims domain.ApigeeTokenClaims
+	json.Unmarshal([]byte(string(body)), &claims)
+	return &claims, nil
 }
