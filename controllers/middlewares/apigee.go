@@ -3,7 +3,6 @@ package middlewares
 import (
 	"bff/domain"
 	"bff/domain/apperrors"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,8 +20,6 @@ func ApigeeMiddleware(s domain.Auth) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		fmt.Println(accessToken)
-
 		c.Set("access_token", accessToken)
 		c.Next()
 
