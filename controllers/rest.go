@@ -10,5 +10,5 @@ import (
 func ConfigRouter(config *domain.RestConfig) {
 	v1 := config.R.Group("/v1")
 	v1.Use(middlewares.ApigeeMiddleware(config.InternalAuthService))
-	routes.AddTodoRoutes(config, v1)
+	routes.AddRoutes(config, v1)
 }

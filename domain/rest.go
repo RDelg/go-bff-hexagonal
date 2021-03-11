@@ -13,7 +13,7 @@ type Auth interface {
 // HTTP defines methods the controller layer expects to interact
 // with in regards to sending and receiving http messages
 type HTTP interface {
-	Get() gin.HandlerFunc
+	Get(string) gin.HandlerFunc
 }
 
 // RestConfig contains the Engine and
@@ -22,4 +22,5 @@ type RestConfig struct {
 	R                   *gin.Engine
 	InternalAuthService Auth
 	HTTP                HTTP
+	APIEndpoint         string
 }

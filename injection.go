@@ -15,7 +15,7 @@ import (
 func inject() (*gin.Engine, error) {
 	log.Println("Injecting data sources")
 
-	basePath := os.Getenv("API_BASE_PATH")
+	basePath := os.Getenv("API_ENDPOINT")
 	authPath := basePath + "/authorization"
 
 	apigeeAdapter, err := adapters.NewApigeeAdapter(authPath, os.Getenv("APIGEE_CLIENT_ID"), os.Getenv("APIGEE_SECRET"))
@@ -32,6 +32,7 @@ func inject() (*gin.Engine, error) {
 		R:                   router,
 		InternalAuthService: apigeeService,
 		HTTP:                &httpService,
+		APIEndpoint:         basePath,
 	})
 	return router, nil
 }
