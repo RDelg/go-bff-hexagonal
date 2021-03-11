@@ -68,7 +68,7 @@ func (a *ApigeeAdapter) GetAccessToken() (*domain.ApigeeTokenClaims, error) {
 		log.Fatalln(err)
 		return nil, err
 	}
-	// Populate claims from body data
+	// Populate claims from body's data
 	var claims domain.ApigeeTokenClaims
 	json.Unmarshal([]byte(string(body)), &claims)
 	return &claims, nil
