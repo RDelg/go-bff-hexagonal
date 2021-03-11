@@ -22,7 +22,7 @@ type invalidArgument struct {
 }
 
 // AzureADMiddleware creates an Apigee auth middleware
-func AzureADMiddleware(s domain.Auth) gin.HandlerFunc {
+func AzureADMiddleware(s domain.AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		h := authHeader{}
 

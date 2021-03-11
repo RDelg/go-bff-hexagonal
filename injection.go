@@ -28,10 +28,10 @@ func inject() (*gin.Engine, error) {
 
 	router := gin.Default()
 
-	controllers.ConfigRouter(&domain.RestConfig{
+	controllers.ConfigRouter(&domain.Config{
 		R:                   router,
 		InternalAuthService: apigeeService,
-		HTTP:                &httpService,
+		HTTPService:         &httpService,
 		APIEndpoint:         basePath,
 	})
 	return router, nil

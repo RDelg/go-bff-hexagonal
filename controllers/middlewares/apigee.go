@@ -8,7 +8,7 @@ import (
 )
 
 // ApigeeMiddleware creates an Apigee auth middleware
-func ApigeeMiddleware(s domain.Auth) gin.HandlerFunc {
+func ApigeeMiddleware(s domain.AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// validate ID token here
 		accessToken, err := s.GetAccessToken()
