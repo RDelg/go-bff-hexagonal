@@ -1,14 +1,14 @@
 package services
 
 import (
-	"bff/adapters"
+	"bff/domain"
 	"bff/domain/apperrors"
 	"log"
 )
 
 // ApigeeService contains the methods to acess apigee
 type ApigeeService struct {
-	apigeePort adapters.ApigeePort
+	apigeePort domain.ApigeePort
 }
 
 // GetAccessToken validates the id token jwt string
@@ -23,6 +23,6 @@ func (s *ApigeeService) GetAccessToken() (string, error) {
 }
 
 // NewApigeeService returns a new ApigeeService
-func NewApigeeService(adapter adapters.ApigeePort) *ApigeeService {
+func NewApigeeService(adapter domain.ApigeePort) *ApigeeService {
 	return &ApigeeService{apigeePort: adapter}
 }

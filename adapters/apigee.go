@@ -10,11 +10,6 @@ import (
 	"strings"
 )
 
-// ApigeePort contains all the methods to interactuate with ApiGee
-type ApigeePort interface {
-	GetAccessToken() (*domain.ApigeeTokenClaims, error)
-}
-
 // ApigeeAdapter represents an apigee operator
 type ApigeeAdapter struct {
 	authEndpoint string
@@ -30,11 +25,6 @@ func NewApigeeAdapter(authEndpoint, clientID, secret string) (*ApigeeAdapter, er
 		clientID:     clientID,
 		secret:       secret,
 	}, nil
-}
-
-type foo struct {
-	Number int    `json:"number"`
-	Title  string `json:"title"`
 }
 
 //GetAccessToken returns an Apigee token and its duration
