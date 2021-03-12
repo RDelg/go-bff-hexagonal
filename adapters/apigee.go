@@ -34,28 +34,24 @@ func (a *ApigeeAdapter) GetAccessToken() (*domain.ApigeeTokenClaims, error) {
 	data.Set("client_id", a.clientID)
 	data.Set("client_secret", a.secret)
 	data.Set("scope", "")
-
 	req, err := http.NewRequest(http.MethodPost, a.authEndpoint, strings.NewReader(data.Encode()))
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return nil, err
 	}
-
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return nil, err
 	}
-
 	defer resp.Body.Close()
-
 	// We read the response body on the line below.
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return nil, err
 	}
 	// Populate claims from body's data
