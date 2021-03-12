@@ -2,5 +2,5 @@ POST,/hypertune/experiment
 GET,/hypertune/experiment/:expid
 GET,/hypertune/list/user/:userid
 POST,/prediction/batch
-GET,/prediction/list/model/:runid
+GET,/prediction/batch/list/model/:runid
 GET,/metrics/list/experiment/:expid
