@@ -16,5 +16,5 @@ type AuthService interface {
 // HTTPService defines methods the controller layer expects to interact
 // with in regards to sending and receiving http messages
 type HTTPService interface {
-	Get(string) gin.HandlerFunc
+	Get() gin.HandlerFunc
 }

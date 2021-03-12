@@ -12,7 +12,7 @@ func ApigeeMiddleware(s domain.AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		accessToken, err := s.GetAccessToken()
 		if err != nil {
-			err := apperrors.NewAuthorization("Provided token is invalid")
+			err := apperrors.NewAuthorization("Internal auth error")
 			c.JSON(err.Status(), gin.H{
 				"error": err,
 			})
