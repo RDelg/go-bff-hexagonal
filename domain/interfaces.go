@@ -2,8 +2,8 @@ package domain
 
 import "github.com/gin-gonic/gin"
 
-// ApigeePort contains all the methods to interactuate with ApiGee
-type ApigeePort interface {
+// ProxyAuthPort contains all the methods to interactuate with ApiGee
+type ProxyAuthPort interface {
 	GetAccessToken() (*ApigeeTokenClaims, error)
 }
 
@@ -14,9 +14,9 @@ type AuthService interface {
 	GetEnvironment() (string, error)
 }
 
-// HTTPService defines methods the controller layer expects to interact
+// ProxyService defines methods the controller layer expects to interact
 // with in regards to sending and receiving http messages
-type HTTPService interface {
+type ProxyService interface {
 	Get() gin.HandlerFunc
 	Post() gin.HandlerFunc
 }

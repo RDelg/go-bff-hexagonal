@@ -50,10 +50,10 @@ func AddRoutes(config *domain.Config, rg *gin.RouterGroup) {
 		log.Println(route.Method, ": ", url)
 		switch route.Method {
 		case "POST":
-			rg.POST(url, config.HTTPService.Post())
+			rg.POST(url, config.ProxyService.Post())
 			log.Println("OK")
 		case "GET":
-			rg.GET(url, config.HTTPService.Get())
+			rg.GET(url, config.ProxyService.Get())
 			log.Println("OK")
 		default:
 			log.Fatalln("METHOD NOT IMPLEMENTED")

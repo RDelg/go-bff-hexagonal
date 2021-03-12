@@ -9,6 +9,6 @@ import (
 type Config struct {
 	R                   *gin.Engine
 	InternalAuthService AuthService
-	HTTPService         HTTPService
+	ProxyService        ProxyService
 	APIEndpoint         string
 }

@@ -8,14 +8,14 @@ import (
 
 // ApigeeService contains the methods to acess apigee
 type ApigeeService struct {
-	apigeePort  domain.ApigeePort
-	environment string
+	ProxyAuthPort domain.ProxyAuthPort
+	environment   string
 }
 
 // GetAccessToken validates the id token jwt string
 // It returns the user extract from the IDTokenCustomClaims
 func (s *ApigeeService) GetAccessToken() (string, error) {
-	claims, err := s.apigeePort.GetAccessToken()
+	claims, err := s.ProxyAuthPort.GetAccessToken()
 	if err != nil {
 		log.Printf("Error getting the access token - Error: %v\n", err)
 		return "", apperrors.NewAuthorization("Error getting the access token")
@@ -29,6 +29,6 @@ func (s *ApigeeService) GetEnvironment() (string, error) {
 }
 
 // NewApigeeService returns a new ApigeeService
-func NewApigeeService(adapter domain.ApigeePort, environment string) *ApigeeService {
-	return &ApigeeService{apigeePort: adapter, environment: environment}
+func NewApigeeService(adapter domain.ProxyAuthPort, environment string) *ApigeeService {
+	return &ApigeeService{ProxyAuthPort: adapter, environment: environment}
 }

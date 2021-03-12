@@ -1,6 +1,7 @@
 package services
 
 import (
+	"bff/domain"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -8,13 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// HTTPService contains the methods to acess apigee
-type HTTPService struct {
+// ProxyService contains the methods to acess apigee
+type ProxyService struct {
 	APIEndpoint string
+	ProxyAuth   domain.ProxyAuthPort
 }
 
 //Get gets data
-func (s *HTTPService) Get() gin.HandlerFunc {
+func (s *ProxyService) Get() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log.Printf("Hello from http service. url: %v\n", c.Request.URL)
 		c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "test": "123"})
@@ -43,7 +45,7 @@ func (s *HTTPService) Get() gin.HandlerFunc {
 }
 
 //Get gets data
-func (s *HTTPService) Post() gin.HandlerFunc {
+func (s *ProxyService) Post() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		new_url := s.APIEndpoint + c.Request.URL.Path
 		req, err := http.NewRequest(http.MethodPost, new_url, c.Request.Body)

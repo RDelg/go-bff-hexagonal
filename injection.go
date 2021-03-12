@@ -22,14 +22,14 @@ func inject() (*gin.Engine, error) {
 
 	authPath := basePath + "/authorization"
 
-	apigeeAdapter, err := adapters.NewApigeeAdapter(authPath, apigeeClient, apigeeSecret)
+	ApigeeProxyAuthPort, err := adapters.NewApigeeProxyAuthPort(authPath, apigeeClient, apigeeSecret)
 
 	if err != nil {
 		return nil, fmt.Errorf("could not read private key pem file: %w", err)
 	}
 
-	apigeeService := services.NewApigeeService(apigeeAdapter, environment)
-	httpService := services.HTTPService{APIEndpoint: basePath}
+	apigeeService := services.NewApigeeService(ApigeeProxyAuthPort, environment)
+	ProxyService := services.ProxyService{APIEndpoint: basePath}
 
 	log.Println(authPath)
 
@@ -38,7 +38,7 @@ func inject() (*gin.Engine, error) {
 	controllers.ConfigRouter(&domain.Config{
 		R:                   router,
 		InternalAuthService: apigeeService,
-		HTTPService:         &httpService,
+		ProxyService:        &ProxyService,
 		APIEndpoint:         basePath,
 	})
 	return router, nil
