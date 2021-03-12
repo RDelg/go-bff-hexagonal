@@ -10,17 +10,17 @@ import (
 	"strings"
 )
 
-// ApigeeProxyAuthPort represents an apigee operator
-type ApigeeProxyAuthPort struct {
+// ApigeeProxyAuthAdapter represents an apigee operator
+type ApigeeProxyAuthAdapter struct {
 	authEndpoint string
 	clientID     string
 	secret       string
 }
 
-// NewApigeeProxyAuthPort returns a reference to a new ApigeeProxyAuthPort
-func NewApigeeProxyAuthPort(authEndpoint, clientID, secret string) (*ApigeeProxyAuthPort, error) {
+// NewApigeeProxyAuthAdapter returns a reference to a new ApigeeProxyAuthAdapter
+func NewApigeeProxyAuthAdapter(authEndpoint, clientID, secret string) (*ApigeeProxyAuthAdapter, error) {
 	// TODO: Add validation
-	return &ApigeeProxyAuthPort{
+	return &ApigeeProxyAuthAdapter{
 		authEndpoint: authEndpoint,
 		clientID:     clientID,
 		secret:       secret,
@@ -28,7 +28,7 @@ func NewApigeeProxyAuthPort(authEndpoint, clientID, secret string) (*ApigeeProxy
 }
 
 //GetAccessToken returns an Apigee token and its duration
-func (a *ApigeeProxyAuthPort) GetAccessToken() (*domain.ApigeeTokenClaims, error) {
+func (a *ApigeeProxyAuthAdapter) GetAccessToken() (*domain.ApigeeTokenClaims, error) {
 	data := url.Values{}
 	data.Set("grant_type", "client_credentials")
 	data.Set("client_id", a.clientID)

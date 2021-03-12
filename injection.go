@@ -22,7 +22,7 @@ func inject() (*gin.Engine, error) {
 
 	authPath := basePath + "/authorization"
 
-	ApigeeProxyAuthPort, err := adapters.NewApigeeProxyAuthPort(authPath, apigeeClient, apigeeSecret)
+	ApigeeProxyAuthPort, err := adapters.NewApigeeProxyAuthAdapter(authPath, apigeeClient, apigeeSecret)
 
 	if err != nil {
 		return nil, fmt.Errorf("could not read private key pem file: %w", err)
