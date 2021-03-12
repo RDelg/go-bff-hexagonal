@@ -42,8 +42,6 @@ func loadRoutes(file string) ([]routes, error) {
 // AddRoutes adds all the routes
 func AddRoutes(config *domain.Config, rg *gin.RouterGroup) {
 	routes, err := loadRoutes("./resources/routes.csv")
-	url := "/v1/test/:user"
-	rg.GET(url, config.HTTPService.Get())
 	if err != nil {
 		log.Fatalf("Error loading the routes: %v\n", err)
 	}
@@ -52,12 +50,13 @@ func AddRoutes(config *domain.Config, rg *gin.RouterGroup) {
 		log.Println(route.Method, ": ", url)
 		switch route.Method {
 		case "POST":
+			rg.POST(url, config.HTTPService.Post())
 			log.Println("OK")
 		case "GET":
 			rg.GET(url, config.HTTPService.Get())
 			log.Println("OK")
 		default:
-			log.Println("METHOD NOT IMPLEMENTED")
+			log.Fatalln("METHOD NOT IMPLEMENTED")
 		}
 
 	}

@@ -3,6 +3,7 @@ package middlewares
 import (
 	"bff/domain"
 	"bff/domain/apperrors"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +20,10 @@ func ApigeeMiddleware(s domain.AuthService) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		c.Set("access_token", accessToken)
+		environment, _ := s.GetEnvironment()
+
+		c.Request.Header.Set("authorization", fmt.Sprintf("Bearer %s", accessToken))
+		c.Request.Header.Set("x-environment", environment)
 		c.Next()
 
 	}

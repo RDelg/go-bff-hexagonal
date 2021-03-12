@@ -1,3 +1,6 @@
-GET,/test
-GET,/test2
-GET,/test3
+POST,/hypertune/experiment
+GET,/hypertune/experiment/:expid
+GET,/hypertune/list/user/:userid
+POST,/prediction/batch
+GET,/prediction/list/model/:runid
+GET,/metrics/list/experiment/:expid

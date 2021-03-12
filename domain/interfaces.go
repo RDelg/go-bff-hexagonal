@@ -11,10 +11,12 @@ type ApigeePort interface {
 // with in regards to authorizing access
 type AuthService interface {
 	GetAccessToken() (string, error)
+	GetEnvironment() (string, error)
 }
 
 // HTTPService defines methods the controller layer expects to interact
 // with in regards to sending and receiving http messages
 type HTTPService interface {
 	Get() gin.HandlerFunc
+	Post() gin.HandlerFunc
 }

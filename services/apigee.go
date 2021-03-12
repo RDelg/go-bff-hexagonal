@@ -8,7 +8,8 @@ import (
 
 // ApigeeService contains the methods to acess apigee
 type ApigeeService struct {
-	apigeePort domain.ApigeePort
+	apigeePort  domain.ApigeePort
+	environment string
 }
 
 // GetAccessToken validates the id token jwt string
@@ -22,7 +23,12 @@ func (s *ApigeeService) GetAccessToken() (string, error) {
 	return claims.AccessToken, nil
 }
 
+//GetEnvironment returns the environment where to point the service
+func (s *ApigeeService) GetEnvironment() (string, error) {
+	return s.environment, nil
+}
+
 // NewApigeeService returns a new ApigeeService
-func NewApigeeService(adapter domain.ApigeePort) *ApigeeService {
-	return &ApigeeService{apigeePort: adapter}
+func NewApigeeService(adapter domain.ApigeePort, environment string) *ApigeeService {
+	return &ApigeeService{apigeePort: adapter, environment: environment}
 }
