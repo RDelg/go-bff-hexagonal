@@ -2,66 +2,56 @@ package services
 
 import (
 	"bff/domain"
-	"io/ioutil"
+	"bff/domain/apperrors"
+	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 // ProxyService contains the methods to acess apigee
 type ProxyService struct {
-	APIEndpoint string
-	ProxyAuth   domain.ProxyAuthPort
+	Proxy domain.ProxyPort
 }
 
-//Get gets data
-func (s *ProxyService) Get() gin.HandlerFunc {
+// AuthMiddleware authenticates the service to the proxy
+// and mutates the context header with the neccesary values
+// to get authorized
+func (s *ProxyService) AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		log.Printf("Hello from http service. url: %v\n", c.Request.URL)
-		c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "test": "123"})
-		new_url := s.APIEndpoint + c.Request.URL.Path
-		log.Println("new_url: ", new_url)
-		req, err := http.NewRequest(http.MethodGet, new_url, nil)
-		req.Header = c.Request.Header.Clone()
-
-		log.Println("HEADER CLONED: ", req.Header.Clone())
+		claims, err := s.Proxy.Auth()
 		if err != nil {
-			log.Println(err)
+			err := apperrors.NewAuthorization("Internal auth error")
+			c.JSON(err.Status(), gin.H{
+				"error": err,
+			})
+			c.Abort()
+			return
 		}
-		client := &http.Client{}
-		resp, err := client.Do(req)
-		if err != nil {
-			log.Println("Error sending the request: ", err)
-		}
-
-		defer resp.Body.Close()
-		rbody, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Println(err)
-		}
-		c.String(resp.StatusCode, string(rbody))
+		c.Request.Header.Set("authorization", fmt.Sprintf("Bearer %s", claims.AccessToken))
+		c.Request.Header.Set("x-environment", s.Proxy.GetEnv())
+		c.Next()
 	}
 }
 
-//Get gets data
+// Get method
+func (s *ProxyService) Get() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		status, body, err := s.Proxy.Get(c.Request.URL.Path, &c.Request.Header)
+		if err != nil {
+			log.Println(err)
+		}
+		c.String(status, string(body))
+	}
+}
+
+// Post method
 func (s *ProxyService) Post() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		new_url := s.APIEndpoint + c.Request.URL.Path
-		req, err := http.NewRequest(http.MethodPost, new_url, c.Request.Body)
+		status, body, err := s.Proxy.Post(c.Request.URL.Path, &c.Request.Header, c.Request.Body)
 		if err != nil {
 			log.Println(err)
 		}
-		client := &http.Client{}
-		resp, err := client.Do(req)
-		if err != nil {
-			log.Println("Error sending the request: ", err)
-		}
-		defer resp.Body.Close()
-		rbody, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Println(err)
-		}
-		c.String(resp.StatusCode, string(rbody))
+		c.String(status, string(body))
 	}
 }

@@ -15,31 +15,27 @@ import (
 func inject() (*gin.Engine, error) {
 	log.Println("Injecting data sources")
 
-	basePath := os.Getenv("API_ENDPOINT")
-	environment := os.Getenv("API_ENV")
+	endpoint := os.Getenv("API_ENDPOINT")
 	apigeeClient := os.Getenv("APIGEE_CLIENT_ID")
 	apigeeSecret := os.Getenv("APIGEE_SECRET")
+	environment := os.Getenv("API_ENV")
 
-	authPath := basePath + "/authorization"
-
-	ApigeeProxyAuthPort, err := adapters.NewApigeeProxyAuthAdapter(authPath, apigeeClient, apigeeSecret)
+	apigeeProxy, err := adapters.NewApigeeAdapter(endpoint, apigeeClient, apigeeSecret, environment, "/authorization")
 
 	if err != nil {
 		return nil, fmt.Errorf("could not read private key pem file: %w", err)
 	}
 
-	apigeeService := services.NewApigeeService(ApigeeProxyAuthPort, environment)
-	ProxyService := services.ProxyService{APIEndpoint: basePath}
-
-	log.Println(authPath)
+	ProxyService := services.ProxyService{Proxy: apigeeProxy}
 
 	router := gin.Default()
 
 	controllers.ConfigRouter(&domain.Config{
-		R:                   router,
-		InternalAuthService: apigeeService,
-		ProxyService:        &ProxyService,
-		APIEndpoint:         basePath,
+		R:            router,
+		ProxyService: &ProxyService,
 	})
 	return router, nil
 }
+
+// have func(authPath string) github.com/gin-gonic/gin.HandlerFunc,
+// want func() github.com/gin-gonic/gin.HandlerFunc

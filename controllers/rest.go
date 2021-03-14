@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"bff/controllers/middlewares"
 	"bff/controllers/routes"
 	"bff/domain"
 )
@@ -9,6 +8,6 @@ import (
 // ConfigRouter creates a new rest server definition
 func ConfigRouter(config *domain.Config) {
 	v1 := config.R.Group("/")
-	v1.Use(middlewares.ApigeeMiddleware(config.InternalAuthService))
+	v1.Use(config.ProxyService.AuthMiddleware())
 	routes.AddRoutes(config, v1)
 }

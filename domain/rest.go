@@ -7,8 +7,6 @@ import (
 // Config contains the Engine and
 // the services
 type Config struct {
-	R                   *gin.Engine
-	InternalAuthService AuthService
-	ProxyService        ProxyService
-	APIEndpoint         string
+	R            *gin.Engine
+	ProxyService ProxyService
 }
