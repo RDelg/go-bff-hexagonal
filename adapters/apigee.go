@@ -3,6 +3,7 @@ package adapters
 import (
 	"bff/domain"
 	"encoding/json"
+	"errors"
 	"io"
 	"io/ioutil"
 	"log"
@@ -46,19 +47,22 @@ func (a *ApigeeAdapter) Auth() (*domain.TokenClaims, error) {
 	header := http.Header{}
 	header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	_, body, err := a.DoRequest(http.MethodPost, a.endpoint+a.authPath, &header, strings.NewReader(data.Encode()))
+	status, body, err := a.DoRequest(http.MethodPost, a.authPath, &header, strings.NewReader(data.Encode()))
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
-
+	if status != http.StatusOK {
+		log.Println("Error: Invalid proxy auth response status")
+		return nil, errors.New("proxy auth response status")
+	}
 	var claims domain.TokenClaims
 	json.Unmarshal([]byte(string(body)), &claims)
 	return &claims, nil
 }
 
 // DoRequest do a http request using the given parameters
-func (a *ApigeeAdapter) DoRequest(method, url string, header *http.Header, body io.Reader) (int, []byte, error) {
+func (a *ApigeeAdapter) DoRequest(method string, url string, header *http.Header, body io.Reader) (int, []byte, error) {
 	req, err := http.NewRequest(method, a.endpoint+url, body)
 	if err != nil {
 		log.Println(err)
