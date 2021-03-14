@@ -23,7 +23,7 @@ func inject() (*gin.Engine, error) {
 	apigeeProxy, err := adapters.NewApigeeAdapter(endpoint, apigeeClient, apigeeSecret, environment, "/authorization")
 
 	if err != nil {
-		return nil, fmt.Errorf("could not read private key pem file: %w", err)
+		return nil, fmt.Errorf("could not create apigee adapter: %w", err)
 	}
 
 	ProxyService := services.ProxyService{Proxy: apigeeProxy}
