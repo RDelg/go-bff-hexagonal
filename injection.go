@@ -36,6 +36,3 @@ func inject() (*gin.Engine, error) {
 	})
 	return router, nil
 }
-
-// have func(authPath string) github.com/gin-gonic/gin.HandlerFunc,
-// want func() github.com/gin-gonic/gin.HandlerFunc
