@@ -21,10 +21,9 @@ func (s *ProxyService) AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		claims, err := s.Proxy.Auth()
 		if err != nil {
-			err := apperrors.NewAuthorization("Internal auth error")
-			c.JSON(err.Status(), gin.H{
-				"error": err,
-			})
+			log.Printf("Error Auth: %v\n", err)
+			err := apperrors.NewAuthorization("Proxy auth error")
+			c.JSON(err.Status(), gin.H{"error": err})
 			c.Abort()
 			return
 		}
@@ -34,23 +33,16 @@ func (s *ProxyService) AuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-// Get method
-func (s *ProxyService) Get() gin.HandlerFunc {
+// Do method
+func (s *ProxyService) Do(method string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		status, body, err := s.Proxy.Get(c.Request.URL.Path, &c.Request.Header)
+		status, body, err := s.Proxy.DoRequest(method, c.Request.URL.Path, &c.Request.Header, c.Request.Body)
 		if err != nil {
-			log.Println(err)
-		}
-		c.String(status, string(body))
-	}
-}
-
-// Post method
-func (s *ProxyService) Post() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		status, body, err := s.Proxy.Post(c.Request.URL.Path, &c.Request.Header, c.Request.Body)
-		if err != nil {
-			log.Println(err)
+			log.Printf("Error GET: %v\n", err)
+			err := apperrors.NewBadRequest("Error sending the get request")
+			c.JSON(err.Status(), gin.H{"error": err})
+			c.Abort()
+			return
 		}
 		c.String(status, string(body))
 	}

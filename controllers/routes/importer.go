@@ -4,6 +4,7 @@ import (
 	"bff/domain"
 	"encoding/csv"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -50,10 +51,10 @@ func AddRoutes(config *domain.Config, rg *gin.RouterGroup) {
 		log.Println(route.Method, ": ", url)
 		switch route.Method {
 		case "POST":
-			rg.POST(url, config.ProxyService.Post())
+			rg.POST(url, config.ProxyService.Do(http.MethodPost))
 			log.Println("OK")
 		case "GET":
-			rg.GET(url, config.ProxyService.Get())
+			rg.GET(url, config.ProxyService.Do(http.MethodGet))
 			log.Println("OK")
 		default:
 			log.Fatalln("METHOD NOT IMPLEMENTED")

@@ -24,7 +24,6 @@ type ApigeeAdapter struct {
 
 // NewApigeeAdapter returns a reference to a new ApigeeAdapter
 func NewApigeeAdapter(endpoint, clientID, clientSecret, environment, authPath string) (*ApigeeAdapter, error) {
-	// TODO: Add validation
 	return &ApigeeAdapter{
 		endpoint:     endpoint,
 		clientID:     clientID,
@@ -35,7 +34,7 @@ func NewApigeeAdapter(endpoint, clientID, clientSecret, environment, authPath st
 	}, nil
 }
 
-// Auth authenticages againts the Apigee server and returns the access token
+// Auth authenticates againts the Apigee server and returns the access token
 func (a *ApigeeAdapter) Auth() (*domain.TokenClaims, error) {
 
 	data := url.Values{}
@@ -47,7 +46,7 @@ func (a *ApigeeAdapter) Auth() (*domain.TokenClaims, error) {
 	header := http.Header{}
 	header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	_, body, err := a.Post(a.endpoint+a.authPath, &header, strings.NewReader(data.Encode()))
+	_, body, err := a.DoRequest(http.MethodPost, a.endpoint+a.authPath, &header, strings.NewReader(data.Encode()))
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -58,44 +57,32 @@ func (a *ApigeeAdapter) Auth() (*domain.TokenClaims, error) {
 	return &claims, nil
 }
 
-func (a *ApigeeAdapter) Get(url string, header *http.Header) (int, []byte, error) {
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+// DoRequest method
+func (a *ApigeeAdapter) DoRequest(method, url string, header *http.Header, body io.Reader) (int, []byte, error) {
+	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		log.Println(err)
+		return 0, nil, err
 	}
-	req.Header = *header
+	if header != nil {
+		req.Header = *header
+	}
 	resp, err := a.httpClient.Do(req)
 	if err != nil {
 		log.Println("Error sending the request: ", err)
+		return 0, nil, err
 	}
 
 	defer resp.Body.Close()
 	rbody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Println(err)
+		return 0, nil, err
 	}
 	return resp.StatusCode, rbody, nil
 }
 
-func (a *ApigeeAdapter) Post(url string, header *http.Header, body io.Reader) (int, []byte, error) {
-	req, err := http.NewRequest(http.MethodPost, url, body)
-	if err != nil {
-		log.Println(err)
-	}
-	req.Header = *header
-	resp, err := a.httpClient.Do(req)
-	if err != nil {
-		log.Println("Error sending the request: ", err)
-	}
-
-	defer resp.Body.Close()
-	rbody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-	}
-	return resp.StatusCode, rbody, nil
-}
-
+// GetEnv returns the adapter environment
 func (a *ApigeeAdapter) GetEnv() string {
 	return a.environment
 }
