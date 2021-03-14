@@ -57,9 +57,9 @@ func (a *ApigeeAdapter) Auth() (*domain.TokenClaims, error) {
 	return &claims, nil
 }
 
-// DoRequest method
+// DoRequest do a http request using the given parameters
 func (a *ApigeeAdapter) DoRequest(method, url string, header *http.Header, body io.Reader) (int, []byte, error) {
-	req, err := http.NewRequest(method, url, body)
+	req, err := http.NewRequest(method, a.endpoint+url, body)
 	if err != nil {
 		log.Println(err)
 		return 0, nil, err
